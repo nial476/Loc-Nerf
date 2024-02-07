@@ -1,4 +1,4 @@
-#This is a fork of Loc-NeRF from MIT_SPARK lab with some modifications on using the algorithm for Boston Dynamic SPOT
+# This is a fork of Loc-NeRF from MIT_SPARK lab with some modifications on using the algorithm for Boston Dynamic SPOT
 
 
 # Loc-NeRF
