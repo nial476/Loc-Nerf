@@ -1,11 +1,13 @@
-import rospy
+import rclpy
+from rclpy import node
 import numpy as np
 import warnings
 from full_filter import NeRF
 
+node.Node.decl
  # Base class to handle loading params from yaml.
 
-class NavigatorBase:
+class NavigatorBase(rclpy.node.Node):
     def __init__(self, img_num=0, dataset_name=None):
         # extract params
         self.factor = rospy.get_param('factor')
@@ -58,6 +60,7 @@ class NavigatorBase:
 
         self.obs_img_num = img_num
 
+        # TODO these don't individually need to be part of the navigator class
         nerf_params = {'near':self.near, 'far':self.far, 'course_samples':self.course_samples, 'fine_samples':self.fine_samples,
                        'batch_size':self.batch_size, 'factor':self.factor, 'focal':self.focal, 'H':self.H, 'W':self.W, 'dataset_type':self.dataset_type,
                        'obs_img_num':self.obs_img_num, 'kernel_size':self.kernel_size, 'lrate':self.lrate, 'sampling_strategy':self.sampling_strategy,

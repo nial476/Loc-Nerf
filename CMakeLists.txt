@@ -19,5 +19,6 @@ include_directories(
 )
 
 catkin_install_python(PROGRAMS src/nav_node.py
+  src/read_to_rosbag.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

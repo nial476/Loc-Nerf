@@ -7,10 +7,10 @@ import cv2
 from cv_bridge import CvBridge
 
 ######## user params ##########
-TOPIC_NAME = "/camera/color/image_raw"
-data_bag = rosbag.Bag("/home/dominic/<rosbag.bag>")
-SAVE_LOC = "/home/dominic"
-DATA_NAME = "nerf_hallway"
+TOPIC_NAME = "/camera/rgb/image_raw"
+data_bag = rosbag.Bag("/home/nirmal/2023-11-22-16-22-44.bag")
+SAVE_LOC = "/home/nirmal/project/data_for_nerf"
+DATA_NAME = "nerf_turtlebot"
 downsample = 10
 ###############################
 

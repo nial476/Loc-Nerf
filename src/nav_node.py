@@ -19,7 +19,7 @@ from geometry_msgs.msg import PoseArray, Pose
 from scipy.spatial.transform import Rotation as R
 from copy import copy
 
-import locnerf
+
 from full_filter import NeRF
 from particle_filter import ParticleFilter
 from utils import get_pose
@@ -296,8 +296,7 @@ class Navigator(NavigatorBase):
         """
         acceptable_error = 5.0
         average_rot_t = (self.filter.compute_simple_rotation_average()).transpose()
-        # check rot in bounds by getting angle using https://math.stackexchange.com/questions/2113634/comparing-two-rotation-matrices
-
+        
         r_ab = average_rot_t @ (self.gt_pose[0:3,0:3])
         rot_error = np.rad2deg(np.arccos((np.trace(r_ab) - 1) / 2))
         print("rotation error: ", rot_error)

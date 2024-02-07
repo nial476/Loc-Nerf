@@ -5,8 +5,7 @@ import cv2
 import json
 import os
 
-# most of this script is adapted from iNeRF https://github.com/salykovaa/inerf
-# and NeRF-Pytorch https://github.com/yenchenlin/nerf-pytorch/blob/master/load_llff.py
+
 
 rot_psi = lambda phi: np.array([
         [1, 0, 0, 0],
@@ -63,8 +62,6 @@ def load_blender(data_dir, model_name, obs_img_num, half_res, white_bkgd, *kwarg
 
 def get_pose(phi, theta, psi, x, y, z, obs_img_pose, center_about_true_pose):
     if center_about_true_pose:
-        # print("recentering")
-        # print(obs_img_pose)
         pose = trans_t(x, y, z) @ rot_phi(phi/180.*np.pi) @ rot_theta(theta/180.*np.pi) @ rot_psi(psi/180.*np.pi)  @ obs_img_pose
     else:
         pose = trans_t(x, y, z) @ rot_phi(phi/180.*np.pi) @ rot_theta(theta/180.*np.pi) @ rot_psi(psi/180.*np.pi)
@@ -105,10 +102,6 @@ img2mse = lambda x, y : torch.mean((x - y) ** 2)
 mse2psnr = lambda x : -10. * torch.log(x) / torch.log(torch.Tensor([10.]))
 to8b = lambda x : (255*np.clip(x,0,1)).astype(np.uint8)
 
-# Load llff data
-
-########## Slightly modified version of LLFF data loading code
-##########  see https://github.com/Fyusion/LLFF for original
 
 def _minify(basedir, factors=[], resolutions=[]):
     needtoload = False
@@ -209,14 +202,13 @@ def _load_data(basedir, factor=None, width=None, height=None, load_imgs=True):
 
     def imread(f):
         if f.endswith('png'):
-            return imageio.imread(f, ignoregamma=True)
+            return imageio.imread(f)
         else:
             return imageio.imread(f)
 
     imgs = imgs = [imread(f)[..., :3] / 255. for f in imgfiles]
     imgs = np.stack(imgs, -1)
 
-    # print('Loaded image data', imgs.shape, poses[:, -1, 0])
     return poses, bds, imgs
 
 
@@ -309,15 +301,13 @@ def spherify_poses(poses, bds):
 
 def load_llff_data(data_dir, model_name, obs_img_num, *kwargs, factor=8, recenter=True, bd_factor=.75, spherify=False):
     poses, bds, imgs = _load_data(data_dir + "/", factor=factor)  # factor=8 downsamples original imgs by 8x
-    # print('Loaded', data_dir + str(model_name) + "/", bds.min(), bds.max())
 
-    # Correct rotation matrix ordering and move variable dim to axis 0
     poses = np.concatenate([poses[:, 1:2, :], -poses[:, 0:1, :], poses[:, 2:, :]], 1)
     poses = np.moveaxis(poses, -1, 0).astype(np.float32)
     images = np.moveaxis(imgs, -1, 0).astype(np.float32)
     bds = np.moveaxis(bds, -1, 0).astype(np.float32)
 
-    # Rescale if bd_factor is provided
+
     sc = 1. if bd_factor is None else 1. / (bds.min() * bd_factor)
     poses[:, :3, 3] *= sc
     bds *= sc
@@ -328,7 +318,7 @@ def load_llff_data(data_dir, model_name, obs_img_num, *kwargs, factor=8, recente
     if spherify:
         poses, bds = spherify_poses(poses, bds)
     print("loading image number: ", obs_img_num)
-    #images = images.astype(np.float32)
+
     images = np.asarray(images * 255, dtype=np.uint8)
     poses = poses.astype(np.float32)
     hwf = poses[0,:3,-1]

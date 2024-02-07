@@ -13,8 +13,7 @@ from scipy.spatial.transform import Rotation as R
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# part of this script is adapted from iNeRF https://github.com/salykovaa/inerf
-# and NeRF-Pytorch https://github.com/yenchenlin/nerf-pytorch/blob/master/load_llff.py
+
 
 class NeRF:
     
